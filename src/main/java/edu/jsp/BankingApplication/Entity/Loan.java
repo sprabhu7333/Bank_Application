@@ -1,6 +1,9 @@
 package edu.jsp.BankingApplication.Entity;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,9 +12,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Loan {
 
 	@Id
@@ -26,5 +32,6 @@ public class Loan {
 	
 	@ManyToOne
 	@JoinColumn
+	@JsonBackReference
 	private User user;
 }

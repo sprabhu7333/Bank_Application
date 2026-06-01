@@ -28,20 +28,16 @@ public class LoanService {
 		return loanRepository.save(loan);
 	}
 	
-	public Loan getLoanById(long loanId) {
-		return loanRepository.findById(loanId)
+	public Loan getLoanById(long userId, long loanId) {
+		
+		return loanRepository.findByUserUidAndId(userId,loanId)
 				.orElseThrow(()->new NotFoundException("Loan", "Id", loanId));
 	}
 	
 	@Transactional
 	public String deleteLoan(long userId,Long loanId) {
-		User u= userRepository.findById(userId)
-				.orElseThrow(()-> new NotFoundException("User","Id",userId));
-		
-		Loan l=loanRepository.findById(loanId)
+		Loan l=loanRepository.findByUserUidAndId(userId,loanId)
 				.orElseThrow(()->new NotFoundException("Loan", "Id", loanId));
-		
-		u.removeLoan(l);
 		
 		loanRepository.delete(l);
 		
@@ -52,5 +48,25 @@ public class LoanService {
 	public List<Loan> getLoanByUserId(long userId){
 		
 		return loanRepository.getLoanByUserId(userId);
+	}
+	
+	//repay loan and updating inside the dataBase
+	public String repayLoan(long userId, long loanId,double amount) {
+		Loan l= loanRepository.findByUserUidAndId(userId,loanId)
+				.orElseThrow(()-> new NotFoundException("Loan", "id", loanId));
+		l.setBalance(l.getBalance()-amount);
+		
+		if(l.getBalance()<=0) {
+			l.setStatus("repaid");
+		}
+		loanRepository.save(l);
+		return "Loan amount paid";
+	}
+	
+	//getting loan status
+	public String getLoanStatus(long userId,long loanId) {
+		Loan l= loanRepository.findByUserUidAndId(userId,loanId)
+				.orElseThrow(()-> new NotFoundException("Loan", "id", loanId));
+		return l.getStatus();
 	}
 }
