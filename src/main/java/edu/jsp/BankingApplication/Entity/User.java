@@ -39,6 +39,20 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
 	private Set<Loan> loans;
 	
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+	private Set<Account> accounts;
+	
+	
+	public void addAccount(Account account) {
+		accounts.add(account);
+		account.setUser(this);
+	}
+	
+	public void removeAccount(Account account) {
+		accounts.remove(account);
+		account.setUser(null);
+	}
+	
 	//adding loan inside user
 	public void addLoan(Loan l) {
 		loans.add(l);
